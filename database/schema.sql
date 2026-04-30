@@ -159,3 +159,35 @@ CREATE INDEX idx_venta_fecha ON Venta(fecha);
 
 -- Búsquedas de variantes por producto
 CREATE INDEX idx_variante_producto ON ProductoVariante(id_producto);
+
+-- ============================================================
+-- VISTAS
+-- ============================================================
+
+-- Vista usada por el reporte de ventas por empleado
+CREATE VIEW vista_ventas_empleado AS
+SELECT
+  e.id_empleado,
+  e.nombre AS empleado,
+  e.cargo,
+  COUNT(v.id_venta) AS total_ventas,
+  SUM(dv.cantidad * dv.precio_unitario) AS total_ingresos
+FROM Empleado e
+JOIN Venta v ON e.id_empleado = v.id_empleado
+JOIN DetalleVenta dv ON v.id_venta = dv.id_venta
+GROUP BY e.id_empleado, e.nombre, e.cargo;
+
+-- Vista usada por el reporte de productos mas vendidos
+CREATE VIEW vista_productos_mas_vendidos AS
+SELECT
+  p.id_producto,
+  p.nombre AS producto,
+  p.marca,
+  c.nombre AS categoria,
+  SUM(dv.cantidad) AS unidades_vendidas,
+  SUM(dv.cantidad * dv.precio_unitario) AS total_ingresos
+FROM Producto p
+JOIN Categoria c ON p.id_categoria = c.id_categoria
+JOIN ProductoVariante pv ON p.id_producto = pv.id_producto
+JOIN DetalleVenta dv ON pv.id_variante = dv.id_variante
+GROUP BY p.id_producto, p.nombre, p.marca, c.nombre;
