@@ -1,0 +1,121 @@
+.layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+
+/* ── Sidebar ── */
+
+.sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0;
+    overflow-y: auto;
+}
+
+.sidebar-brand {
+    padding: 0 24px 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+}
+
+.brand-display {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    line-height: 1;
+}
+
+.brand-sub {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 300;
+}
+
+
+/* ── Nav ── */
+
+.sidebar-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 12px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+    color: var(--text-sub);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+}
+
+.nav-item:hover {
+    background: var(--accent-soft);
+    color: var(--text);
+}
+
+.nav-item--active {
+    background: var(--accent);
+    color: #fff !important;
+}
+
+.nav-item--active .nav-icon {
+    opacity: 1;
+}
+
+.nav-icon {
+    font-size: 14px;
+    opacity: 0.5;
+    width: 16px;
+    text-align: center;
+}
+
+.nav-item--active .nav-icon {
+    opacity: 1;
+}
+
+
+/* ── Footer ── */
+
+.sidebar-footer {
+    padding: 16px 24px 0;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.sidebar-footer-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+}
+
+
+/* ── Main ── */
+
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px 48px;
+}
