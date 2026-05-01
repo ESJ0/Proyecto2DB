@@ -1,0 +1,64 @@
+.page {
+    max-width: 1100px;
+}
+
+
+/* Formulario dentro de modal */
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.form-row--3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+}
+
+
+/* Badge de estado generico */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+}
+
+.badge--success {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.badge--error {
+    background: var(--error-bg);
+    color: var(--error);
+}
+
+.badge--warning {
+    background: var(--warning-bg);
+    color: var(--warning);
+}
+
+.badge--neutral {
+    background: var(--accent-soft);
+    color: var(--text-sub);
+}
