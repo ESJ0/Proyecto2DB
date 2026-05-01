@@ -17,15 +17,13 @@ import Spinner      from '../components/Spinner'
 import { formatDate } from '../utils/formatters'
 import './Page.css'
 
-const EMPTY = { nombre: '', telefono: '', email: '', cargo: '', fecha_contra: '' }
-
-const CARGOS = ['Vendedor', 'Cajero', 'Supervisor', 'Bodeguero', 'Gerente', 'Recursos Humanos']
+const EMPTY = { nombre: '', telefono: '', email: '', fecha_contra: '' }
 
 const COLUMNS = [
   { key: 'id_empleado',  label: 'ID' },
   { key: 'nombre',       label: 'Nombre' },
   { key: 'email',        label: 'Email' },
-  { key: 'cargo',        label: 'Cargo' },
+  { key: 'telefono',     label: 'Teléfono' },
   {
     key: 'fecha_contra',
     label: 'Contratación',
@@ -53,10 +51,9 @@ export default function Empleados() {
   const openEdit = (row) => {
     setEditTarget(row)
     reset({
-      nombre:      row.nombre,
-      telefono:    row.telefono    || '',
-      email:       row.email       || '',
-      cargo:       row.cargo       || '',
+      nombre:       row.nombre,
+      telefono:     row.telefono    || '',
+      email:        row.email       || '',
       fecha_contra: row.fecha_contra
         ? row.fecha_contra.split('T')[0]
         : ''
@@ -73,10 +70,9 @@ export default function Empleados() {
 
   const handleSubmit = async () => {
     const isValid = validate({
-      nombre:       (v) => !v?.trim()  ? 'El nombre es requerido'       : null,
-      email:        (v) => !v?.trim()  ? 'El email es requerido'        : null,
-      cargo:        (v) => !v?.trim()  ? 'El cargo es requerido'        : null,
-      fecha_contra: (v) => !v          ? 'La fecha de contrato es requerida' : null,
+      nombre:       (v) => !v?.trim() ? 'El nombre es requerido'            : null,
+      email:        (v) => !v?.trim() ? 'El email es requerido'             : null,
+      fecha_contra: (v) => !v         ? 'La fecha de contrato es requerida' : null,
     })
     if (!isValid) return
 
@@ -160,15 +156,6 @@ export default function Empleados() {
               onChange={handleChange}
               placeholder="Ej. carlos@zapateria.com"
             />
-          </FormField>
-
-          <FormField label="Cargo" error={errors.cargo}>
-            <select name="cargo" value={values.cargo} onChange={handleChange}>
-              <option value="">Seleccionar cargo...</option>
-              {CARGOS.map(c => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
           </FormField>
 
           <FormField label="Fecha de contratación" error={errors.fecha_contra}>

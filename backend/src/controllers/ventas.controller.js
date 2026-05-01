@@ -1,5 +1,5 @@
 const dao = require('../daos/ventas.dao')
-const service = require('../services/ventas.service')
+const service = require('../service/ventas.service')
 
 const getAll = async(req, res, next) => {
     try {

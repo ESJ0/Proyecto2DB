@@ -9,8 +9,8 @@ const requiredFields = [
 ]
 
 router.get('/', controller.getAll)
-router.get('/:id', controller.getById)
 router.get('/producto/:id_producto', controller.getByProducto)
+router.get('/:id', controller.getById)
 router.post('/', validateBody(requiredFields), controller.create)
 router.put('/:id', validateBody(requiredFields), controller.update)
 router.delete('/:id', controller.remove)

@@ -8,7 +8,7 @@ const registrarVenta = async({ id_cliente, id_empleado, metodo_pago, items }) =>
         // 1. Verificar stock de cada variante
         for (const item of items) {
             const variante = await client.query(
-                'SELECT stock_total FROM ProductoVariante WHERE id_variante = $1', [item.id_variante]
+                'SELECT stock_total FROM producto_variante WHERE id_variante = $1', [item.id_variante]
             )
 
             if (!variante.rows[0]) {

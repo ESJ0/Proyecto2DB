@@ -3,7 +3,7 @@ const router = express.Router()
 const controller = require('../controllers/empleados.controller')
 const validateBody = require('../middlewares/validateBody')
 
-const requiredFields = ['nombre', 'email', 'cargo', 'fecha_contra']
+const requiredFields = ['nombre', 'email', 'fecha_contra']
 
 router.get('/', controller.getAll)
 router.get('/:id', controller.getById)

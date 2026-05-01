@@ -169,13 +169,12 @@ CREATE VIEW vista_ventas_empleado AS
 SELECT
   e.id_empleado,
   e.nombre AS empleado,
-  e.cargo,
   COUNT(v.id_venta) AS total_ventas,
   SUM(dv.cantidad * dv.precio_unitario) AS total_ingresos
 FROM empleado e
 JOIN venta v ON e.id_empleado = v.id_empleado
 JOIN detalle_venta dv ON v.id_venta = dv.id_venta
-GROUP BY e.id_empleado, e.nombre, e.cargo;
+GROUP BY e.id_empleado, e.nombre;
 
 -- Vista usada por el reporte de productos mas vendidos
 CREATE VIEW vista_productos_mas_vendidos AS
