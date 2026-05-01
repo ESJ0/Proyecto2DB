@@ -4,6 +4,7 @@ const getAll = async() => {
     const result = await pool.query(`
     SELECT
       pv.id_variante,
+      pv.id_producto,
       pv.talla,
       pv.color,
       pv.peso,
@@ -14,8 +15,8 @@ const getAll = async() => {
       p.nombre AS producto,
       p.sku,
       p.precio_actual
-    FROM ProductoVariante pv
-    JOIN Producto p ON pv.id_producto = p.id_producto
+    FROM producto_variante pv
+    JOIN producto p ON pv.id_producto = p.id_producto
     ORDER BY pv.id_variante ASC
   `)
     return result.rows
@@ -25,6 +26,7 @@ const getById = async(id) => {
     const result = await pool.query(`
     SELECT
       pv.id_variante,
+      pv.id_producto,
       pv.talla,
       pv.color,
       pv.peso,
@@ -35,8 +37,8 @@ const getById = async(id) => {
       p.nombre AS producto,
       p.sku,
       p.precio_actual
-    FROM ProductoVariante pv
-    JOIN Producto p ON pv.id_producto = p.id_producto
+    FROM producto_variante pv
+    JOIN producto p ON pv.id_producto = p.id_producto
     WHERE pv.id_variante = $1
   `, [id])
     return result.rows[0]
@@ -44,8 +46,7 @@ const getById = async(id) => {
 
 const getByProducto = async(id_producto) => {
     const result = await pool.query(`
-    SELECT *
-    FROM ProductoVariante
+    SELECT * FROM producto_variante
     WHERE id_producto = $1
     ORDER BY talla ASC
   `, [id_producto])
@@ -54,7 +55,7 @@ const getByProducto = async(id_producto) => {
 
 const create = async({ id_producto, talla, color, peso, alto, ancho, largo, stock_total }) => {
     const result = await pool.query(`
-    INSERT INTO ProductoVariante
+    INSERT INTO producto_variante
       (id_producto, talla, color, peso, alto, ancho, largo, stock_total)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING *
@@ -64,7 +65,7 @@ const create = async({ id_producto, talla, color, peso, alto, ancho, largo, stoc
 
 const update = async(id, { id_producto, talla, color, peso, alto, ancho, largo, stock_total }) => {
     const result = await pool.query(`
-    UPDATE ProductoVariante
+    UPDATE producto_variante
     SET
       id_producto = $1,
       talla       = $2,
@@ -82,15 +83,14 @@ const update = async(id, { id_producto, talla, color, peso, alto, ancho, largo, 
 
 const remove = async(id) => {
     const result = await pool.query(
-        'DELETE FROM ProductoVariante WHERE id_variante = $1 RETURNING *', [id]
+        'DELETE FROM producto_variante WHERE id_variante = $1 RETURNING *', [id]
     )
     return result.rows[0]
 }
 
-// Metodo que usa el service de ventas para verificar y descontar stock
 const descontarStock = async(client, id_variante, cantidad) => {
     const result = await client.query(`
-    UPDATE ProductoVariante
+    UPDATE producto_variante
     SET stock_total = stock_total - $1
     WHERE id_variante = $2
     AND stock_total >= $1

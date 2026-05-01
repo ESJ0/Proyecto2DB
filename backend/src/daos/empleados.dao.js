@@ -2,38 +2,38 @@ const pool = require('../database/pool')
 
 const getAll = async() => {
     const result = await pool.query(
-        'SELECT * FROM Empleado ORDER BY id_empleado ASC'
+        'SELECT * FROM empleado ORDER BY id_empleado ASC'
     )
     return result.rows
 }
 
 const getById = async(id) => {
     const result = await pool.query(
-        'SELECT * FROM Empleado WHERE id_empleado = $1', [id]
+        'SELECT * FROM empleado WHERE id_empleado = $1', [id]
     )
     return result.rows[0]
 }
 
-const create = async({ nombre, telefono, email, cargo, fecha_contra }) => {
+const create = async({ nombre, telefono, email, fecha_contra }) => {
     const result = await pool.query(`
-    INSERT INTO Empleado (nombre, telefono, email, cargo, fecha_contra)
-    VALUES ($1, $2, $3, $4, $5) RETURNING *
-  `, [nombre, telefono, email, cargo, fecha_contra])
+    INSERT INTO empleado (nombre, telefono, email, fecha_contra)
+    VALUES ($1, $2, $3, $4) RETURNING *
+  `, [nombre, telefono, email, fecha_contra])
     return result.rows[0]
 }
 
-const update = async(id, { nombre, telefono, email, cargo, fecha_contra }) => {
+const update = async(id, { nombre, telefono, email, fecha_contra }) => {
     const result = await pool.query(`
-    UPDATE Empleado
-    SET nombre = $1, telefono = $2, email = $3, cargo = $4, fecha_contra = $5
-    WHERE id_empleado = $6 RETURNING *
-  `, [nombre, telefono, email, cargo, fecha_contra, id])
+    UPDATE empleado
+    SET nombre = $1, telefono = $2, email = $3, fecha_contra = $4
+    WHERE id_empleado = $5 RETURNING *
+  `, [nombre, telefono, email, fecha_contra, id])
     return result.rows[0]
 }
 
 const remove = async(id) => {
     const result = await pool.query(
-        'DELETE FROM Empleado WHERE id_empleado = $1 RETURNING *', [id]
+        'DELETE FROM empleado WHERE id_empleado = $1 RETURNING *', [id]
     )
     return result.rows[0]
 }

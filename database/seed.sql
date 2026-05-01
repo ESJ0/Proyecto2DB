@@ -5,7 +5,7 @@
 -- ------------------------------------------------------------
 -- Categoria (25 registros)
 -- ------------------------------------------------------------
-INSERT INTO Categoria (nombre, descripcion) VALUES
+INSERT INTO categoria (nombre, descripcion) VALUES
 ('Zapatillas Deportivas',   'Calzado diseñado para actividades deportivas y running'),
 ('Zapatos Casuales',        'Calzado para uso diario y ocasiones informales'),
 ('Botas',                   'Calzado de caña alta para distintos usos'),
@@ -35,7 +35,7 @@ INSERT INTO Categoria (nombre, descripcion) VALUES
 -- ------------------------------------------------------------
 -- Proveedor (25 registros)
 -- ------------------------------------------------------------
-INSERT INTO Proveedor (nombre, telefono, email) VALUES
+INSERT INTO proveedor (nombre, telefono, email) VALUES
 ('Nike Distribution GT',        '22001001', 'orders@nike-gt.com'),
 ('Adidas Centroamérica',        '22001002', 'ventas@adidas-ca.com'),
 ('New Balance Imports',         '22001003', 'info@nb-imports.com'),
@@ -65,7 +65,7 @@ INSERT INTO Proveedor (nombre, telefono, email) VALUES
 -- ------------------------------------------------------------
 -- Producto (25 registros)
 -- ------------------------------------------------------------
-INSERT INTO Producto (id_categoria, id_proveedor, nombre, sku, marca, descripcion, genero, precio_actual, imagen) VALUES
+INSERT INTO producto (id_categoria, id_proveedor, nombre, sku, marca, descripcion, genero, precio_actual, imagen) VALUES
 (1,  1,  'Air Max 90',               'NIK-AM90',   'Nike',          'Zapatilla icónica con unidad de aire visible en talón',         'Unisex', 1350.00, 'nike_airmax90.jpg'),
 (1,  2,  'Ultraboost 22',            'ADI-UB22',   'Adidas',        'Zapatilla de running con tecnología Boost de alta energía',     'Unisex', 1550.00, 'adidas_ultraboost22.jpg'),
 (1,  3,  'Fresh Foam 1080v12',       'NB-FF1080',  'New Balance',   'Zapatilla de running con amortiguación máxima Fresh Foam',      'M',      1450.00, 'nb_freshfoam1080.jpg'),
@@ -95,7 +95,7 @@ INSERT INTO Producto (id_categoria, id_proveedor, nombre, sku, marca, descripcio
 -- ------------------------------------------------------------
 -- ProductoVariante (25 registros)
 -- ------------------------------------------------------------
-INSERT INTO ProductoVariante (id_producto, talla, color, peso, alto, ancho, largo, stock_total) VALUES
+INSERT INTO producto_variante (id_producto, talla, color, peso, alto, ancho, largo, stock_total) VALUES
 (1,  '42', 'Blanco/Negro',      0.35, 12.0, 10.0, 29.0, 20),
 (1,  '44', 'Blanco/Negro',      0.38, 12.5, 10.5, 30.0, 15),
 (2,  '41', 'Negro/Blanco',      0.32, 13.0, 10.0, 28.0, 18),
@@ -155,7 +155,7 @@ INSERT INTO empleado (nombre, telefono, email, fecha_contra) VALUES
 -- ------------------------------------------------------------
 -- Cliente (25 registros)
 -- ------------------------------------------------------------
-INSERT INTO Cliente (nombre, telefono, email) VALUES
+INSERT INTO cliente (nombre, telefono, email) VALUES
 ('Pedro Alvarado',      '44441001', 'pedro.alvarado@gmail.com'),
 ('Lucía Mendoza',       '44441002', 'lucia.mendoza@gmail.com'),
 ('Roberto Castillo',    '44441003', 'roberto.castillo@gmail.com'),
@@ -185,7 +185,7 @@ INSERT INTO Cliente (nombre, telefono, email) VALUES
 -- ------------------------------------------------------------
 -- Venta (25 registros)
 -- ------------------------------------------------------------
-INSERT INTO Venta (id_cliente, id_empleado, fecha, metodo_pago) VALUES
+INSERT INTO venta (id_cliente, id_empleado, fecha, metodo_pago) VALUES
 (1,  1,  '2025-01-05 09:15:00', 'Efectivo'),
 (2,  2,  '2025-01-08 10:30:00', 'Tarjeta'),
 (3,  3,  '2025-01-12 11:00:00', 'Efectivo'),
@@ -215,7 +215,7 @@ INSERT INTO Venta (id_cliente, id_empleado, fecha, metodo_pago) VALUES
 -- ------------------------------------------------------------
 -- DetalleVenta (25 registros)
 -- ------------------------------------------------------------
-INSERT INTO DetalleVenta (id_venta, id_variante, cantidad, precio_unitario) VALUES
+INSERT INTO detalle_venta (id_venta, id_variante, cantidad, precio_unitario) VALUES
 (1,  1,  1, 1350.00),
 (2,  3,  1, 1550.00),
 (3,  15, 1, 1800.00),

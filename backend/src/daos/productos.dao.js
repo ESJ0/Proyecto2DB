@@ -2,7 +2,7 @@ const pool = require('../database/pool')
 
 const getAll = async() => {
     const result = await pool.query(`
-    SELECT 
+    SELECT
       p.id_producto,
       p.nombre,
       p.sku,
@@ -11,11 +11,13 @@ const getAll = async() => {
       p.genero,
       p.precio_actual,
       p.imagen,
+      p.id_categoria,
+      p.id_proveedor,
       c.nombre AS categoria,
       pr.nombre AS proveedor
-    FROM Producto p
-    JOIN Categoria c   ON p.id_categoria = c.id_categoria
-    JOIN Proveedor pr  ON p.id_proveedor = pr.id_proveedor
+    FROM producto p
+    JOIN categoria c   ON p.id_categoria = c.id_categoria
+    JOIN proveedor pr  ON p.id_proveedor = pr.id_proveedor
     ORDER BY p.id_producto ASC
   `)
     return result.rows
@@ -23,7 +25,7 @@ const getAll = async() => {
 
 const getById = async(id) => {
     const result = await pool.query(`
-    SELECT 
+    SELECT
       p.id_producto,
       p.nombre,
       p.sku,
@@ -32,11 +34,13 @@ const getById = async(id) => {
       p.genero,
       p.precio_actual,
       p.imagen,
+      p.id_categoria,
+      p.id_proveedor,
       c.nombre AS categoria,
       pr.nombre AS proveedor
-    FROM Producto p
-    JOIN Categoria c   ON p.id_categoria = c.id_categoria
-    JOIN Proveedor pr  ON p.id_proveedor = pr.id_proveedor
+    FROM producto p
+    JOIN categoria c   ON p.id_categoria = c.id_categoria
+    JOIN proveedor pr  ON p.id_proveedor = pr.id_proveedor
     WHERE p.id_producto = $1
   `, [id])
     return result.rows[0]
@@ -44,7 +48,7 @@ const getById = async(id) => {
 
 const create = async({ id_categoria, id_proveedor, nombre, sku, marca, descripcion, genero, precio_actual, imagen }) => {
     const result = await pool.query(`
-    INSERT INTO Producto 
+    INSERT INTO producto
       (id_categoria, id_proveedor, nombre, sku, marca, descripcion, genero, precio_actual, imagen)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     RETURNING *
@@ -54,8 +58,8 @@ const create = async({ id_categoria, id_proveedor, nombre, sku, marca, descripci
 
 const update = async(id, { id_categoria, id_proveedor, nombre, sku, marca, descripcion, genero, precio_actual, imagen }) => {
     const result = await pool.query(`
-    UPDATE Producto
-    SET 
+    UPDATE producto
+    SET
       id_categoria  = $1,
       id_proveedor  = $2,
       nombre        = $3,
@@ -73,7 +77,7 @@ const update = async(id, { id_categoria, id_proveedor, nombre, sku, marca, descr
 
 const remove = async(id) => {
     const result = await pool.query(
-        'DELETE FROM Producto WHERE id_producto = $1 RETURNING *', [id]
+        'DELETE FROM producto WHERE id_producto = $1 RETURNING *', [id]
     )
     return result.rows[0]
 }

@@ -172,9 +172,9 @@ SELECT
   e.cargo,
   COUNT(v.id_venta) AS total_ventas,
   SUM(dv.cantidad * dv.precio_unitario) AS total_ingresos
-FROM Empleado e
-JOIN Venta v ON e.id_empleado = v.id_empleado
-JOIN DetalleVenta dv ON v.id_venta = dv.id_venta
+FROM empleado e
+JOIN venta v ON e.id_empleado = v.id_empleado
+JOIN detalle_venta dv ON v.id_venta = dv.id_venta
 GROUP BY e.id_empleado, e.nombre, e.cargo;
 
 -- Vista usada por el reporte de productos mas vendidos
@@ -186,8 +186,8 @@ SELECT
   c.nombre AS categoria,
   SUM(dv.cantidad) AS unidades_vendidas,
   SUM(dv.cantidad * dv.precio_unitario) AS total_ingresos
-FROM Producto p
-JOIN Categoria c ON p.id_categoria = c.id_categoria
-JOIN ProductoVariante pv ON p.id_producto = pv.id_producto
-JOIN DetalleVenta dv ON pv.id_variante = dv.id_variante
+FROM producto p
+JOIN categoria c ON p.id_categoria = c.id_categoria
+JOIN producto_variante pv ON p.id_producto = pv.id_producto
+JOIN detalle_venta dv ON pv.id_variante = dv.id_variante
 GROUP BY p.id_producto, p.nombre, p.marca, c.nombre;

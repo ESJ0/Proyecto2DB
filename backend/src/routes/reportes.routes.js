@@ -1,94 +1,15 @@
-const dao = require('../daos/reportes.dao')
+const express = require('express')
+const router = express.Router()
+const controller = require('../controllers/reportes.controller')
 
-const ventasDetalladas = async(req, res, next) => {
-    try {
-        const data = await dao.ventasDetalladas()
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-}
+router.get('/ventas-detalladas', controller.ventasDetalladas)
+router.get('/inventario', controller.inventarioCompleto)
+router.get('/detalle-ventas-productos', controller.detalleVentasProductos)
+router.get('/clientes-con-compras', controller.clientesConCompras)
+router.get('/productos-stock-bajo-promedio', controller.productosStockBajoPromedio)
+router.get('/categorias-mas-vendidas', controller.categoriasMasVendidas)
+router.get('/top-productos-mes', controller.topProductosMes)
+router.get('/ventas-por-empleado', controller.ventasPorEmpleado)
+router.get('/productos-mas-vendidos', controller.productosMasVendidos)
 
-const inventarioCompleto = async(req, res, next) => {
-    try {
-        const data = await dao.inventarioCompleto()
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-}
-
-const detalleVentasProductos = async(req, res, next) => {
-    try {
-        const data = await dao.detalleVentasProductos()
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-}
-
-const clientesConCompras = async(req, res, next) => {
-    try {
-        const data = await dao.clientesConCompras()
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-}
-
-const productosStockBajoPromedio = async(req, res, next) => {
-    try {
-        const data = await dao.productosStockBajoPromedio()
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-}
-
-const categoriasMasVendidas = async(req, res, next) => {
-    try {
-        const data = await dao.categoriasMasVendidas()
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-}
-
-const topProductosMes = async(req, res, next) => {
-    try {
-        const data = await dao.topProductosMes()
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-}
-
-const ventasPorEmpleado = async(req, res, next) => {
-    try {
-        const data = await dao.ventasPorEmpleado()
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-}
-
-const productosMasVendidos = async(req, res, next) => {
-    try {
-        const data = await dao.productosMasVendidos()
-        res.json(data)
-    } catch (err) {
-        next(err)
-    }
-}
-
-module.exports = {
-    ventasDetalladas,
-    inventarioCompleto,
-    detalleVentasProductos,
-    clientesConCompras,
-    productosStockBajoPromedio,
-    categoriasMasVendidas,
-    topProductosMes,
-    ventasPorEmpleado,
-    productosMasVendidos
-}
+module.exports = router
