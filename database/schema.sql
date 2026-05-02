@@ -152,13 +152,13 @@ CREATE TABLE detalle_venta (
 -- ============================================================
 
 -- Búsquedas frecuentes de productos por categoría
-CREATE INDEX idx_producto_categoria ON Producto(id_categoria);
+CREATE INDEX idx_producto_categoria ON producto(id_categoria);
 
 -- Búsquedas de ventas por fecha (reportes)
-CREATE INDEX idx_venta_fecha ON Venta(fecha);
+CREATE INDEX idx_venta_fecha ON venta(fecha);
 
 -- Búsquedas de variantes por producto
-CREATE INDEX idx_variante_producto ON ProductoVariante(id_producto);
+CREATE INDEX idx_variante_producto ON producto_variante(id_producto);
 
 -- ============================================================
 -- VISTAS
