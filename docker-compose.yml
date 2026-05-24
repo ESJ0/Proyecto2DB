@@ -4,8 +4,8 @@ services:
     container_name: tienda_db
     restart: always
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB:       ${DB_NAME}
+      POSTGRES_USER:     ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
@@ -27,12 +27,13 @@ services:
       db:
         condition: service_healthy
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
+      DB_HOST:     ${DB_HOST}
+      DB_PORT:     ${DB_PORT}
+      DB_NAME:     ${DB_NAME}
+      DB_USER:     ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
-      PORT: ${PORT}
+      PORT:        ${PORT}
+      JWT_SECRET:  ${JWT_SECRET}
     ports:
       - "3000:3000"
     volumes:
