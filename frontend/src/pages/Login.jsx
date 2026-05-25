@@ -115,7 +115,7 @@ export default function Login() {
                   onClick={() => setShowPass(p => !p)}
                   tabIndex={-1}
                 >
-                  {showPass ? '🙈' : '👁'}
+                  {showPass ? '🔍' : '👁'}
                 </button>
               </div>
             </div>

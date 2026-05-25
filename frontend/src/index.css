@@ -8,29 +8,37 @@
 }
 
 :root {
-    /* Colores */
+    /* ── Colores base ── */
     --bg: #F7F6F3;
     --surface: #FFFFFF;
     --border: #E8E6E1;
     --border-dark: #D4D0C8;
+    /* ── Texto ── */
     --text: #1A1916;
     --text-sub: #6B6860;
     --text-muted: #9E9B94;
+    /* ── Acento ── */
     --accent: #1A1916;
     --accent-soft: #F0EDE6;
+    /* ── Estado ── */
     --success: #2D6A4F;
     --success-bg: #EAF4EE;
     --error: #9B2335;
     --error-bg: #FCEEF0;
     --warning: #7D5A00;
     --warning-bg: #FEF7E6;
-    /* Tipografía */
+    --info: #2D5BA3;
+    --info-bg: #EAF0FB;
+    /* ── Tipografía ── */
     --font-display: 'DM Serif Display', serif;
     --font-body: 'DM Sans', sans-serif;
-    /* Espaciado */
+    /* ── Layout ── */
     --sidebar-w: 240px;
     --radius: 6px;
     --radius-lg: 12px;
+    /* ── Sombras suaves ── */
+    --shadow-sm: 0 1px 3px rgba(26, 25, 22, 0.06), 0 1px 2px rgba(26, 25, 22, 0.04);
+    --shadow-md: 0 4px 12px rgba(26, 25, 22, 0.08), 0 2px 4px rgba(26, 25, 22, 0.04);
 }
 
 html,
@@ -49,10 +57,10 @@ body {
 }
 
 
-/* Scrollbar */
+/* ── Scrollbar ── */
 
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -65,7 +73,7 @@ body {
 }
 
 
-/* Transiciones globales */
+/* ── Transiciones globales ── */
 
 * {
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
