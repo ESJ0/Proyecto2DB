@@ -254,7 +254,7 @@ TO rol_reportes;
 -- Acceso mínimo, solo consulta de catálogo público
 CREATE ROLE rol_cliente_web;
 
-GRANT SELECT ON producto, categoria TO rol_cliente_web;
+GRANT SELECT ON producto, producto_variante, categoria TO rol_cliente_web;
 
 -- Revocar explícitamente lo que NO debe ver
 REVOKE ALL ON usuario    FROM rol_cliente_web;

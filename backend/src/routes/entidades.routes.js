@@ -33,9 +33,9 @@ const variantesRouter = express.Router()
 const vCtrl = require('../controllers/variantes.controller')
 const V_REQUIRED = ['id_producto', 'talla', 'color', 'peso', 'alto', 'ancho', 'largo']
 
-variantesRouter.get('/', requireAuth, requireRole(['admin', 'inventario', 'vendedor', 'reportes']), vCtrl.getAll)
-variantesRouter.get('/producto/:id_producto', requireAuth, requireRole(['admin', 'inventario', 'vendedor']), vCtrl.getByProducto)
-variantesRouter.get('/:id', requireAuth, requireRole(['admin', 'inventario', 'vendedor', 'reportes']), vCtrl.getById)
+variantesRouter.get('/', requireAuth, requireRole(['admin', 'inventario', 'vendedor', 'reportes', 'cliente_web']), vCtrl.getAll)
+variantesRouter.get('/producto/:id_producto', requireAuth, requireRole(['admin', 'inventario', 'vendedor', 'cliente_web']), vCtrl.getByProducto)
+variantesRouter.get('/:id', requireAuth, requireRole(['admin', 'inventario', 'vendedor', 'reportes', 'cliente_web']), vCtrl.getById)
 variantesRouter.post('/', requireAuth, requireRole(['admin', 'inventario']), validate(V_REQUIRED), vCtrl.create)
 variantesRouter.put('/:id', requireAuth, requireRole(['admin', 'inventario']), validate(V_REQUIRED), vCtrl.update)
 variantesRouter.delete('/:id', requireAuth, requireRole(['admin']), vCtrl.remove)

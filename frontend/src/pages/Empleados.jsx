@@ -15,6 +15,8 @@ import FormField    from '../components/FormField'
 import ErrorMessage from '../components/ErrorMessage'
 import Spinner      from '../components/Spinner'
 import { formatDate } from '../utils/formatters'
+import { useAuth } from '../context/AuthContext'
+import { can, denyPermission } from '../utils/permissions'
 import './Page.css'
 
 const EMPTY = { nombre: '', telefono: '', email: '', fecha_contra: '' }
@@ -32,6 +34,7 @@ const COLUMNS = [
 ]
 
 export default function Empleados() {
+  const { usuario } = useAuth()
   const { data: empleados, loading, error, reload } = useFetch(getEmpleados)
 
   const [modalOpen,   setModalOpen]   = useState(false)
@@ -40,6 +43,14 @@ export default function Empleados() {
   const [submitting,  setSubmitting]  = useState(false)
 
   const { values, errors, handleChange, reset, validate } = useForm(EMPTY)
+
+  const guard = (action, fn) => (...args) => {
+    if (!can(usuario?.rol, 'empleados', action)) {
+      denyPermission()
+      return
+    }
+    fn(...args)
+  }
 
   const openCreate = () => {
     setEditTarget(null)
@@ -111,14 +122,14 @@ export default function Empleados() {
       <PageHeader
         title="Empleados"
         subtitle={`${empleados?.length ?? 0} empleados registrados`}
-        action={<Button onClick={openCreate}>+ Nuevo empleado</Button>}
+        action={<Button onClick={guard('create', openCreate)}>+ Nuevo empleado</Button>}
       />
 
       <Table
         columns={COLUMNS}
         data={empleados}
-        onEdit={openEdit}
-        onDelete={handleDelete}
+        onEdit={guard('update', openEdit)}
+        onDelete={guard('delete', handleDelete)}
         emptyMessage="No hay empleados registrados"
       />
 

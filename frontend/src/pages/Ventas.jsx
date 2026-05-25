@@ -12,6 +12,8 @@ import FormField    from '../components/FormField'
 import ErrorMessage from '../components/ErrorMessage'
 import Spinner      from '../components/Spinner'
 import { formatCurrency, formatDateTime } from '../utils/formatters'
+import { useAuth } from '../context/AuthContext'
+import { can, denyPermission } from '../utils/permissions'
 import './Page.css'
 import './Ventas.css'
 
@@ -33,6 +35,7 @@ const COLUMNS = [
 const ITEM_EMPTY = { id_variante: '', cantidad: 1, precio_unitario: '' }
 
 export default function Ventas() {
+  const { usuario } = useAuth()
   const { data: ventas,    loading: loadingV, error, reload } = useFetch(getVentas)
   const { data: clientes,  loading: loadingC }  = useFetch(getClientes)
   const { data: empleados, loading: loadingE }  = useFetch(getEmpleados)
@@ -48,6 +51,14 @@ export default function Ventas() {
 
   // Items del detalle
   const [items, setItems] = useState([{ ...ITEM_EMPTY }])
+
+  const guard = (action, fn) => (...args) => {
+    if (!can(usuario?.rol, 'ventas', action)) {
+      denyPermission()
+      return
+    }
+    fn(...args)
+  }
 
   const openCreate = () => {
     setHead({ id_cliente: '', id_empleado: '', metodo_pago: '' })
@@ -146,7 +157,7 @@ export default function Ventas() {
       <PageHeader
         title="Ventas"
         subtitle={`${ventas?.length ?? 0} ventas registradas`}
-        action={<Button onClick={openCreate}>+ Nueva venta</Button>}
+        action={<Button onClick={guard('create', openCreate)}>+ Nueva venta</Button>}
       />
 
       <Table

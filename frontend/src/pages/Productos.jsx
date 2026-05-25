@@ -17,6 +17,8 @@ import FormField    from '../components/FormField'
 import ErrorMessage from '../components/ErrorMessage'
 import Spinner      from '../components/Spinner'
 import { formatCurrency } from '../utils/formatters'
+import { useAuth } from '../context/AuthContext'
+import { can, denyPermission } from '../utils/permissions'
 import './Page.css'
 
 const EMPTY = {
@@ -47,6 +49,7 @@ const COLUMNS = [
 ]
 
 export default function Productos() {
+  const { usuario } = useAuth()
   const { data: productos,  loading: loadingP, error: errorP, reload } = useFetch(getProductos)
   const { data: categorias, loading: loadingC } = useFetch(getCategorias)
   const { data: proveedores,loading: loadingPr } = useFetch(getProveedores)
@@ -57,6 +60,14 @@ export default function Productos() {
   const [submitting,  setSubmitting]  = useState(false)
 
   const { values, errors, handleChange, reset, validate } = useForm(EMPTY)
+
+  const guard = (action, fn) => (...args) => {
+    if (!can(usuario?.rol, 'productos', action)) {
+      denyPermission()
+      return
+    }
+    fn(...args)
+  }
 
   const openCreate = () => {
     setEditTarget(null)
@@ -144,14 +155,14 @@ export default function Productos() {
       <PageHeader
         title="Productos"
         subtitle={`${productos?.length ?? 0} productos registrados`}
-        action={<Button onClick={openCreate}>+ Nuevo producto</Button>}
+        action={<Button onClick={guard('create', openCreate)}>+ Nuevo producto</Button>}
       />
 
       <Table
         columns={COLUMNS}
         data={productos}
-        onEdit={openEdit}
-        onDelete={handleDelete}
+        onEdit={guard('update', openEdit)}
+        onDelete={guard('delete', handleDelete)}
         emptyMessage="No hay productos registrados"
       />
 

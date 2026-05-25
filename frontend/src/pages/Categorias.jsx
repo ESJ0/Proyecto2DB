@@ -14,6 +14,8 @@ import Modal        from '../components/Modal'
 import FormField    from '../components/FormField'
 import ErrorMessage from '../components/ErrorMessage'
 import Spinner      from '../components/Spinner'
+import { useAuth } from '../context/AuthContext'
+import { can, denyPermission } from '../utils/permissions'
 import './Page.css'
 
 const EMPTY = { nombre: '', descripcion: '' }
@@ -25,6 +27,7 @@ const COLUMNS = [
 ]
 
 export default function Categorias() {
+  const { usuario } = useAuth()
   const { data: categorias, loading, error, reload } = useFetch(getCategorias)
 
   const [modalOpen,  setModalOpen]  = useState(false)
@@ -33,6 +36,14 @@ export default function Categorias() {
   const [submitting,  setSubmitting]  = useState(false)
 
   const { values, errors, handleChange, reset, validate } = useForm(EMPTY)
+
+  const guard = (action, fn) => (...args) => {
+    if (!can(usuario?.rol, 'categorias', action)) {
+      denyPermission()
+      return
+    }
+    fn(...args)
+  }
 
   const openCreate = () => {
     setEditTarget(null)
@@ -95,14 +106,14 @@ export default function Categorias() {
       <PageHeader
         title="Categorías"
         subtitle={`${categorias?.length ?? 0} categorías registradas`}
-        action={<Button onClick={openCreate}>+ Nueva categoría</Button>}
+        action={<Button onClick={guard('create', openCreate)}>+ Nueva categoría</Button>}
       />
 
       <Table
         columns={COLUMNS}
         data={categorias}
-        onEdit={openEdit}
-        onDelete={handleDelete}
+        onEdit={guard('update', openEdit)}
+        onDelete={guard('delete', handleDelete)}
         emptyMessage="No hay categorías registradas"
       />
 

@@ -1,0 +1,53 @@
+.sin-permiso {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    padding: 24px;
+}
+
+.sin-permiso-card {
+    text-align: center;
+    max-width: 380px;
+}
+
+.sin-permiso-code {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 80px;
+    color: var(--border-dark);
+    line-height: 1;
+    margin-bottom: 16px;
+}
+
+.sin-permiso-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 12px;
+}
+
+.sin-permiso-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+.sin-permiso-btn {
+    padding: 10px 24px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-family: var(--font-body);
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.sin-permiso-btn:hover {
+    opacity: 0.85;
+}
