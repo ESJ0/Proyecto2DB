@@ -255,8 +255,8 @@ INSERT INTO detalle_venta (id_venta, id_variante, cantidad, precio_unitario) VAL
 -- Usuarios de prueba — 1 por cada rol
 -- ------------------------------------------------------------
 INSERT INTO usuario (username, password_hash, rol) VALUES
-('admin_user',      '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'admin'),
-('vendedor_user',   '$2b$10$TKh8H1.PfY7u8j4R5dPJsOtcjN62b4fBJsJXq1U.E9J8.6vGBpGuC', 'vendedor'),
-('inventario_user', '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC.CLenta4UUlWZnG4a',  'inventario'),
-('reportes_user',   '$2b$10$YRez.mJPK2mJDrAqy1r3x.gj2N8N06n3HPWbAFCHVQtV7.G0MFWWK', 'reportes'),
-('cliente_user',    '$2b$10$2eUPIT.VBVYHmK6h1s5eXez/rAR0hJj.6dPYuP8gTF5eOqjFAH5kC', 'cliente_web');
+('admin_user',      '$2a$10$H3Zusv1y2ACdOMtorWqXWekbeZjjtprgL8ACSX5lCykAHWEQ483ya', 'admin'),
+('vendedor_user',   '$2a$10$39.14y7ioPN4a5zKZLTNnOkgw0/cokJGfjgujojtdlzTgn2.X/blu', 'vendedor'),
+('inventario_user', '$2a$10$1DI0CX7eKwyyHXL5bNFhPeOyBFhMt/99nYy6FaaaP66smw6JjyBti', 'inventario'),
+('reportes_user',   '$2a$10$ugWUZW3bViJWzrj4YKaDiuqE2iUWcUqPegLcn0jAU320XtjgOclhG', 'reportes'),
+('cliente_user',    '$2a$10$sqbEuLaasibCNThRPR4BrO.UTQFWKbawJn.QF2RvHNQg4Q4qX03Qi', 'cliente_web');

@@ -1,10 +1,5 @@
 -- =============================================================
--- SCHEMA COMPLETO — Proyecto 3
--- PostgreSQL · cc3088 Bases de Datos 1
--- =============================================================
-
--- =============================================================
--- TABLAS BASE 
+-- TABLAS BASE
 -- =============================================================
 
 CREATE TABLE proveedor (
@@ -112,7 +107,7 @@ CREATE TABLE detalle_venta (
 
 
 -- =============================================================
--- TABLA DE USUARIOS CON ROLES
+-- TABLA DE USUARIOS 
 -- =============================================================
 
 CREATE TABLE usuario (
@@ -173,11 +168,17 @@ GROUP BY p.id_producto, p.nombre, p.marca, c.nombre;
 -- ROLES EN EL DBMS 
 -- =============================================================
 
-DROP ROLE IF EXISTS rol_admin;
-DROP ROLE IF EXISTS rol_vendedor;
-DROP ROLE IF EXISTS rol_inventario;
-DROP ROLE IF EXISTS rol_reportes;
-DROP ROLE IF EXISTS rol_cliente_web;
+-- Eliminar si ya existen para evitar errores al correr varias veces
+DO $$
+BEGIN
+  DROP ROLE IF EXISTS rol_cliente_web;
+  DROP ROLE IF EXISTS rol_reportes;
+  DROP ROLE IF EXISTS rol_inventario;
+  DROP ROLE IF EXISTS rol_vendedor;
+  DROP ROLE IF EXISTS rol_admin;
+EXCEPTION WHEN OTHERS THEN NULL;
+END
+$$;
 
 -- ── 1. Administrador ──────────────────────────────────────────
 -- Acceso total a todas las tablas y vistas
@@ -211,9 +212,9 @@ GRANT SELECT ON
     vista_ventas_empleado, vista_productos_mas_vendidos
 TO rol_vendedor;
 
-GRANT USAGE, SELECT ON
-    SEQUENCE venta_id_venta_seq,
-    SEQUENCE cliente_id_cliente_seq
+GRANT USAGE, SELECT ON SEQUENCE
+    venta_id_venta_seq,
+    cliente_id_cliente_seq
 TO rol_vendedor;
 
 -- ── 3. Inventario ─────────────────────────────────────────────
@@ -229,16 +230,15 @@ GRANT SELECT ON
     vista_productos_mas_vendidos
 TO rol_inventario;
 
-GRANT USAGE, SELECT ON
-    SEQUENCE producto_id_producto_seq,
-    SEQUENCE producto_variante_id_variante_seq,
-    SEQUENCE categoria_id_categoria_seq,
-    SEQUENCE proveedor_id_proveedor_seq
+GRANT USAGE, SELECT ON SEQUENCE
+    producto_id_producto_seq,
+    producto_variante_id_variante_seq,
+    categoria_id_categoria_seq,
+    proveedor_id_proveedor_seq
 TO rol_inventario;
 
 -- ── 4. Reportes ───────────────────────────────────────────────
 -- Solo lectura en todas las tablas y vistas
--- Ideal para analistas y auditoría
 CREATE ROLE rol_reportes;
 
 GRANT SELECT ON
@@ -252,7 +252,6 @@ TO rol_reportes;
 
 -- ── 5. Cliente web ────────────────────────────────────────────
 -- Acceso mínimo, solo consulta de catálogo público
-
 CREATE ROLE rol_cliente_web;
 
 GRANT SELECT ON producto, categoria TO rol_cliente_web;
@@ -266,15 +265,16 @@ REVOKE ALL ON detalle_venta FROM rol_cliente_web;
 
 -- =============================================================
 -- USUARIO DE CONEXIÓN ÚNICO (proy3 / secret)
--- recibe los todos los permisos necesarios para el proyecto
 -- =============================================================
 
-GRANT rol_admin TO proy3;
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM pg_roles WHERE rolname = 'proy3') THEN
+    GRANT rol_admin TO proy3;
+  END IF;
+END
+$$;
 
-
--- =============================================================
--- STORED PROCEDURES 
--- =============================================================
 
 -- ── SP 1: Registrar venta ─────────────────────────────────────
 CREATE OR REPLACE PROCEDURE sp_registrar_venta(
@@ -297,17 +297,19 @@ DECLARE
 BEGIN
     -- Validar método de pago
     IF p_metodo_pago NOT IN ('Efectivo', 'Tarjeta') THEN
+        ROLLBACK;
         RAISE EXCEPTION 'Método de pago inválido: %', p_metodo_pago
             USING ERRCODE = 'check_violation';
     END IF;
 
     -- Validar que haya al menos un item
     IF jsonb_array_length(p_items) = 0 THEN
+        ROLLBACK;
         RAISE EXCEPTION 'La venta debe tener al menos un producto'
             USING ERRCODE = 'check_violation';
     END IF;
 
-    -- Verificar stock de TODOS los items antes de insertar nada
+    -- ── BEGIN implícito en PROCEDURE ──────────────────────────
     FOR v_item IN SELECT * FROM jsonb_array_elements(p_items)
     LOOP
         v_id_variante := (v_item->>'id_variante')::INT;
@@ -319,11 +321,13 @@ BEGIN
         FOR UPDATE;  -- bloquear fila para evitar race conditions
 
         IF NOT FOUND THEN
+            ROLLBACK;
             RAISE EXCEPTION 'Variante % no encontrada', v_id_variante
                 USING ERRCODE = 'no_data_found';
         END IF;
 
         IF v_stock_actual < v_cantidad THEN
+            ROLLBACK;
             RAISE EXCEPTION 'Stock insuficiente para variante %. Disponible: %, Solicitado: %',
                 v_id_variante, v_stock_actual, v_cantidad
                 USING ERRCODE = 'check_violation';
@@ -353,11 +357,7 @@ BEGIN
     END LOOP;
 
     p_total := v_subtotal;
-
-EXCEPTION
-    WHEN OTHERS THEN
-        -- El ROLLBACK es automático 
-        RAISE;  
+    COMMIT;
 END;
 $$;
 

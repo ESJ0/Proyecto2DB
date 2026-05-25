@@ -1,4 +1,4 @@
-const Categoria = require('../models/Categoria')
+const Categoria = require('../models/categoria')
 const pool = require('../database/pool')
 
 // GET /api/categorias — todos los roles con acceso

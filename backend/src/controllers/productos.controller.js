@@ -1,4 +1,4 @@
-const Producto = require('../models/Producto')
+const Producto = require('../models/producto')
 const pool = require('../database/pool')
 
 // GET /api/productos — JOIN con SQL directo (Sequelize no maneja bien JOINs sin associations)

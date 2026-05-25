@@ -1,4 +1,4 @@
-const Cliente = require('../models/Cliente')
+const Cliente = require('../models/cliente')
 
 // GET /api/clientes
 const getAll = async(req, res, next) => {
