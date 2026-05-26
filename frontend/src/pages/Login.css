@@ -30,10 +30,11 @@
 .login-brand-name {
     display: block;
     font-family: var(--font-display);
-    font-size: 52px;
+    font-size: 42px;
     color: #fff;
     letter-spacing: 0.1em;
     line-height: 1;
+    white-space: nowrap;
 }
 
 .login-brand-sub {
@@ -275,21 +276,21 @@
 }
 
 .badge--vendedor {
-    background: #EAF4EE;
-    color: #2D6A4F;
+    background: #5e5c55;
+    color: #fff;
 }
 
 .badge--inventario {
-    background: #EAF0FB;
-    color: #2D5BA3;
+    background: #5e5c55;
+    color: #fff;
 }
 
 .badge--reportes {
-    background: #FEF7E6;
-    color: #7D5A00;
+    background: #5e5c55;
+    color: #fff;
 }
 
 .badge--cliente {
-    background: #F3EEF9;
-    color: #6B3FA0;
+    background: #5e5c55;
+    color: #fff;
 }

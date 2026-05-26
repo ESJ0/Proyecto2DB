@@ -7,14 +7,15 @@ import {
   updateCategoria,
   deleteCategoria
 } from '../api/categorias.api'
-import PageHeader   from '../components/PageHeader'
-import Button       from '../components/Button'
-import Table        from '../components/Table'
-import Modal        from '../components/Modal'
-import FormField    from '../components/FormField'
-import ErrorMessage from '../components/ErrorMessage'
-import Spinner      from '../components/Spinner'
-import { useAuth } from '../context/AuthContext'
+import PageHeader    from '../components/PageHeader'
+import Button        from '../components/Button'
+import Table         from '../components/Table'
+import Modal         from '../components/Modal'
+import ConfirmModal  from '../components/ConfirmModal'
+import FormField     from '../components/FormField'
+import ErrorMessage  from '../components/ErrorMessage'
+import Spinner       from '../components/Spinner'
+import { useAuth }   from '../context/AuthContext'
 import { can, denyPermission } from '../utils/permissions'
 import './Page.css'
 
@@ -30,10 +31,14 @@ export default function Categorias() {
   const { usuario } = useAuth()
   const { data: categorias, loading, error, reload } = useFetch(getCategorias)
 
-  const [modalOpen,  setModalOpen]  = useState(false)
-  const [editTarget, setEditTarget] = useState(null)
-  const [submitError, setSubmitError] = useState(null)
-  const [submitting,  setSubmitting]  = useState(false)
+  const [modalOpen,    setModalOpen]    = useState(false)
+  const [editTarget,   setEditTarget]   = useState(null)
+  const [submitError,  setSubmitError]  = useState(null)
+  const [submitting,   setSubmitting]   = useState(false)
+
+  // Estado para el modal de confirmación
+  const [confirmOpen,  setConfirmOpen]  = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   const { values, errors, handleChange, reset, validate } = useForm(EMPTY)
 
@@ -88,13 +93,20 @@ export default function Categorias() {
     }
   }
 
-  const handleDelete = async (row) => {
-    if (!confirm(`¿Eliminar la categoría "${row.nombre}"?`)) return
+  const handleDelete = (row) => {
+    setDeleteTarget(row)
+    setConfirmOpen(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    setConfirmOpen(false)
     try {
-      await deleteCategoria(row.id_categoria)
+      await deleteCategoria(deleteTarget.id_categoria)
       reload()
     } catch (err) {
       alert(err.message)
+    } finally {
+      setDeleteTarget(null)
     }
   }
 
@@ -117,6 +129,7 @@ export default function Categorias() {
         emptyMessage="No hay categorías registradas"
       />
 
+      {/* Modal crear / editar */}
       <Modal
         isOpen={modalOpen}
         onClose={handleClose}
@@ -152,6 +165,15 @@ export default function Categorias() {
           </div>
         </div>
       </Modal>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setDeleteTarget(null) }}
+        onConfirm={handleConfirmDelete}
+        title="¿Eliminar categoría?"
+        message={`La categoría "${deleteTarget?.nombre}" será eliminada permanentemente.`}
+        confirmLabel="Eliminar categoría"
+      />
     </div>
   )
 }

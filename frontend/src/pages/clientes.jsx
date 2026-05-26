@@ -7,14 +7,15 @@ import {
   updateCliente,
   deleteCliente
 } from '../api/clientes.api'
-import PageHeader   from '../components/PageHeader'
-import Button       from '../components/Button'
-import Table        from '../components/Table'
-import Modal        from '../components/Modal'
-import FormField    from '../components/FormField'
-import ErrorMessage from '../components/ErrorMessage'
-import Spinner      from '../components/Spinner'
-import { useAuth } from '../context/AuthContext'
+import PageHeader    from '../components/PageHeader'
+import Button        from '../components/Button'
+import Table         from '../components/Table'
+import Modal         from '../components/Modal'
+import ConfirmModal  from '../components/ConfirmModal'
+import FormField     from '../components/FormField'
+import ErrorMessage  from '../components/ErrorMessage'
+import Spinner       from '../components/Spinner'
+import { useAuth }   from '../context/AuthContext'
 import { can, denyPermission } from '../utils/permissions'
 import './Page.css'
 
@@ -31,40 +32,29 @@ export default function Clientes() {
   const { usuario } = useAuth()
   const { data: clientes, loading, error, reload } = useFetch(getClientes)
 
-  const [modalOpen,   setModalOpen]   = useState(false)
-  const [editTarget,  setEditTarget]  = useState(null)
-  const [submitError, setSubmitError] = useState(null)
-  const [submitting,  setSubmitting]  = useState(false)
+  const [modalOpen,    setModalOpen]    = useState(false)
+  const [editTarget,   setEditTarget]   = useState(null)
+  const [submitError,  setSubmitError]  = useState(null)
+  const [submitting,   setSubmitting]   = useState(false)
+  const [confirmOpen,  setConfirmOpen]  = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   const { values, errors, handleChange, reset, validate } = useForm(EMPTY)
 
   const guard = (action, fn) => (...args) => {
-    if (!can(usuario?.rol, 'clientes', action)) {
-      denyPermission()
-      return
-    }
+    if (!can(usuario?.rol, 'clientes', action)) { denyPermission(); return }
     fn(...args)
   }
 
-  const openCreate = () => {
-    setEditTarget(null)
-    reset(EMPTY)
-    setSubmitError(null)
-    setModalOpen(true)
-  }
+  const openCreate = () => { setEditTarget(null); reset(EMPTY); setSubmitError(null); setModalOpen(true) }
 
   const openEdit = (row) => {
     setEditTarget(row)
     reset({ nombre: row.nombre, telefono: row.telefono || '', email: row.email || '' })
-    setSubmitError(null)
-    setModalOpen(true)
+    setSubmitError(null); setModalOpen(true)
   }
 
-  const handleClose = () => {
-    setModalOpen(false)
-    setEditTarget(null)
-    setSubmitError(null)
-  }
+  const handleClose = () => { setModalOpen(false); setEditTarget(null); setSubmitError(null) }
 
   const handleSubmit = async () => {
     const isValid = validate({
@@ -72,32 +62,22 @@ export default function Clientes() {
       email:  (v) => v && !v.includes('@') ? 'Email inválido' : null
     })
     if (!isValid) return
-
     try {
-      setSubmitting(true)
-      setSubmitError(null)
-      if (editTarget) {
-        await updateCliente(editTarget.id_cliente, values)
-      } else {
-        await createCliente(values)
-      }
-      handleClose()
-      reload()
-    } catch (err) {
-      setSubmitError(err.message)
-    } finally {
-      setSubmitting(false)
-    }
+      setSubmitting(true); setSubmitError(null)
+      if (editTarget) await updateCliente(editTarget.id_cliente, values)
+      else            await createCliente(values)
+      handleClose(); reload()
+    } catch (err) { setSubmitError(err.message)
+    } finally { setSubmitting(false) }
   }
 
-  const handleDelete = async (row) => {
-    if (!confirm(`¿Eliminar al cliente "${row.nombre}"?`)) return
-    try {
-      await deleteCliente(row.id_cliente)
-      reload()
-    } catch (err) {
-      alert(err.message)
-    }
+  const handleDelete = (row) => { setDeleteTarget(row); setConfirmOpen(true) }
+
+  const handleConfirmDelete = async () => {
+    setConfirmOpen(false)
+    try { await deleteCliente(deleteTarget.id_cliente); reload() }
+    catch (err) { alert(err.message) }
+    finally { setDeleteTarget(null) }
   }
 
   if (loading) return <Spinner />
@@ -119,42 +99,18 @@ export default function Clientes() {
         emptyMessage="No hay clientes registrados"
       />
 
-      <Modal
-        isOpen={modalOpen}
-        onClose={handleClose}
-        title={editTarget ? 'Editar cliente' : 'Nuevo cliente'}
-      >
+      <Modal isOpen={modalOpen} onClose={handleClose} title={editTarget ? 'Editar cliente' : 'Nuevo cliente'}>
         <div className="form">
           <ErrorMessage message={submitError} />
-
           <FormField label="Nombre" error={errors.nombre}>
-            <input
-              name="nombre"
-              value={values.nombre}
-              onChange={handleChange}
-              placeholder="Ej. Pedro Alvarado"
-            />
+            <input name="nombre" value={values.nombre} onChange={handleChange} placeholder="Ej. Pedro Alvarado" />
           </FormField>
-
           <FormField label="Teléfono">
-            <input
-              name="telefono"
-              value={values.telefono}
-              onChange={handleChange}
-              placeholder="Ej. 44441001"
-            />
+            <input name="telefono" value={values.telefono} onChange={handleChange} placeholder="Ej. 44441001" />
           </FormField>
-
           <FormField label="Email" error={errors.email}>
-            <input
-              name="email"
-              type="email"
-              value={values.email}
-              onChange={handleChange}
-              placeholder="Ej. pedro@gmail.com"
-            />
+            <input name="email" type="email" value={values.email} onChange={handleChange} placeholder="Ej. pedro@gmail.com" />
           </FormField>
-
           <div className="form-actions">
             <Button variant="ghost" onClick={handleClose}>Cancelar</Button>
             <Button onClick={handleSubmit} disabled={submitting}>
@@ -163,6 +119,15 @@ export default function Clientes() {
           </div>
         </div>
       </Modal>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setDeleteTarget(null) }}
+        onConfirm={handleConfirmDelete}
+        title="¿Eliminar cliente?"
+        message={`El cliente "${deleteTarget?.nombre}" será eliminado permanentemente.`}
+        confirmLabel="Eliminar cliente"
+      />
     </div>
   )
 }

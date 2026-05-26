@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { loginApi } from '../api/auth.api'
+import { defaultPathForRole } from '../utils/permissions'
 import './Login.css'
 
-// Usuarios de prueba para referencia rápida
 const DEMO_USERS = [
   { username: 'admin_user',      password: 'admin123',      rol: 'admin',       label: 'Administrador' },
   { username: 'vendedor_user',   password: 'vendedor123',   rol: 'vendedor',    label: 'Vendedor' },
@@ -25,10 +25,10 @@ export default function Login() {
   const { login } = useAuth()
   const navigate  = useNavigate()
 
-  const [values,     setValues]     = useState({ username: '', password: '' })
-  const [error,      setError]      = useState(null)
-  const [loading,    setLoading]    = useState(false)
-  const [showPass,   setShowPass]   = useState(false)
+  const [values,   setValues]   = useState({ username: '', password: '' })
+  const [error,    setError]    = useState(null)
+  const [loading,  setLoading]  = useState(false)
+  const [showPass, setShowPass] = useState(false)
 
   const handleChange = (e) => {
     setValues(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -46,7 +46,8 @@ export default function Login() {
       setError(null)
       const data = await loginApi(values)
       login(data.token, data.usuario)
-      navigate('/dashboard', { replace: true })
+      // Redirigir según el rol del usuario
+      navigate(defaultPathForRole(data.usuario.rol), { replace: true })
     } catch (err) {
       setError(err.message || 'Credenciales incorrectas')
     } finally {
@@ -63,7 +64,7 @@ export default function Login() {
     <div className="login-page">
       <div className="login-left">
         <div className="login-brand">
-          <span className="login-brand-name">ESJ0 SHOP</span>
+          <span className="login-brand-name">ESJO SHOP</span>
           <span className="login-brand-sub">inventory · sistema de gestión</span>
         </div>
         <p className="login-tagline">
@@ -125,7 +126,6 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Acceso rápido para calificación */}
           <div className="login-demo">
             <p className="login-demo-title">Usuarios de prueba</p>
             <div className="login-demo-grid">

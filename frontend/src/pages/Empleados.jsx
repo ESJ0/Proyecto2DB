@@ -7,15 +7,16 @@ import {
   updateEmpleado,
   deleteEmpleado
 } from '../api/empleados.api'
-import PageHeader   from '../components/PageHeader'
-import Button       from '../components/Button'
-import Table        from '../components/Table'
-import Modal        from '../components/Modal'
-import FormField    from '../components/FormField'
-import ErrorMessage from '../components/ErrorMessage'
-import Spinner      from '../components/Spinner'
+import PageHeader    from '../components/PageHeader'
+import Button        from '../components/Button'
+import Table         from '../components/Table'
+import Modal         from '../components/Modal'
+import ConfirmModal  from '../components/ConfirmModal'
+import FormField     from '../components/FormField'
+import ErrorMessage  from '../components/ErrorMessage'
+import Spinner       from '../components/Spinner'
 import { formatDate } from '../utils/formatters'
-import { useAuth } from '../context/AuthContext'
+import { useAuth }   from '../context/AuthContext'
 import { can, denyPermission } from '../utils/permissions'
 import './Page.css'
 
@@ -26,38 +27,28 @@ const COLUMNS = [
   { key: 'nombre',       label: 'Nombre' },
   { key: 'email',        label: 'Email' },
   { key: 'telefono',     label: 'Teléfono' },
-  {
-    key: 'fecha_contra',
-    label: 'Contratación',
-    render: (v) => formatDate(v)
-  },
+  { key: 'fecha_contra', label: 'Contratación', render: (v) => formatDate(v) },
 ]
 
 export default function Empleados() {
   const { usuario } = useAuth()
   const { data: empleados, loading, error, reload } = useFetch(getEmpleados)
 
-  const [modalOpen,   setModalOpen]   = useState(false)
-  const [editTarget,  setEditTarget]  = useState(null)
-  const [submitError, setSubmitError] = useState(null)
-  const [submitting,  setSubmitting]  = useState(false)
+  const [modalOpen,    setModalOpen]    = useState(false)
+  const [editTarget,   setEditTarget]   = useState(null)
+  const [submitError,  setSubmitError]  = useState(null)
+  const [submitting,   setSubmitting]   = useState(false)
+  const [confirmOpen,  setConfirmOpen]  = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   const { values, errors, handleChange, reset, validate } = useForm(EMPTY)
 
   const guard = (action, fn) => (...args) => {
-    if (!can(usuario?.rol, 'empleados', action)) {
-      denyPermission()
-      return
-    }
+    if (!can(usuario?.rol, 'empleados', action)) { denyPermission(); return }
     fn(...args)
   }
 
-  const openCreate = () => {
-    setEditTarget(null)
-    reset(EMPTY)
-    setSubmitError(null)
-    setModalOpen(true)
-  }
+  const openCreate = () => { setEditTarget(null); reset(EMPTY); setSubmitError(null); setModalOpen(true) }
 
   const openEdit = (row) => {
     setEditTarget(row)
@@ -65,19 +56,12 @@ export default function Empleados() {
       nombre:       row.nombre,
       telefono:     row.telefono    || '',
       email:        row.email       || '',
-      fecha_contra: row.fecha_contra
-        ? row.fecha_contra.split('T')[0]
-        : ''
+      fecha_contra: row.fecha_contra ? row.fecha_contra.split('T')[0] : ''
     })
-    setSubmitError(null)
-    setModalOpen(true)
+    setSubmitError(null); setModalOpen(true)
   }
 
-  const handleClose = () => {
-    setModalOpen(false)
-    setEditTarget(null)
-    setSubmitError(null)
-  }
+  const handleClose = () => { setModalOpen(false); setEditTarget(null); setSubmitError(null) }
 
   const handleSubmit = async () => {
     const isValid = validate({
@@ -86,32 +70,22 @@ export default function Empleados() {
       fecha_contra: (v) => !v         ? 'La fecha de contrato es requerida' : null,
     })
     if (!isValid) return
-
     try {
-      setSubmitting(true)
-      setSubmitError(null)
-      if (editTarget) {
-        await updateEmpleado(editTarget.id_empleado, values)
-      } else {
-        await createEmpleado(values)
-      }
-      handleClose()
-      reload()
-    } catch (err) {
-      setSubmitError(err.message)
-    } finally {
-      setSubmitting(false)
-    }
+      setSubmitting(true); setSubmitError(null)
+      if (editTarget) await updateEmpleado(editTarget.id_empleado, values)
+      else            await createEmpleado(values)
+      handleClose(); reload()
+    } catch (err) { setSubmitError(err.message)
+    } finally { setSubmitting(false) }
   }
 
-  const handleDelete = async (row) => {
-    if (!confirm(`¿Eliminar al empleado "${row.nombre}"?`)) return
-    try {
-      await deleteEmpleado(row.id_empleado)
-      reload()
-    } catch (err) {
-      alert(err.message)
-    }
+  const handleDelete = (row) => { setDeleteTarget(row); setConfirmOpen(true) }
+
+  const handleConfirmDelete = async () => {
+    setConfirmOpen(false)
+    try { await deleteEmpleado(deleteTarget.id_empleado); reload() }
+    catch (err) { alert(err.message) }
+    finally { setDeleteTarget(null) }
   }
 
   if (loading) return <Spinner />
@@ -133,51 +107,21 @@ export default function Empleados() {
         emptyMessage="No hay empleados registrados"
       />
 
-      <Modal
-        isOpen={modalOpen}
-        onClose={handleClose}
-        title={editTarget ? 'Editar empleado' : 'Nuevo empleado'}
-      >
+      <Modal isOpen={modalOpen} onClose={handleClose} title={editTarget ? 'Editar empleado' : 'Nuevo empleado'}>
         <div className="form">
           <ErrorMessage message={submitError} />
-
           <FormField label="Nombre" error={errors.nombre}>
-            <input
-              name="nombre"
-              value={values.nombre}
-              onChange={handleChange}
-              placeholder="Ej. Carlos García"
-            />
+            <input name="nombre" value={values.nombre} onChange={handleChange} placeholder="Ej. Carlos García" />
           </FormField>
-
           <FormField label="Teléfono">
-            <input
-              name="telefono"
-              value={values.telefono}
-              onChange={handleChange}
-              placeholder="Ej. 55551001"
-            />
+            <input name="telefono" value={values.telefono} onChange={handleChange} placeholder="Ej. 55551001" />
           </FormField>
-
           <FormField label="Email" error={errors.email}>
-            <input
-              name="email"
-              type="email"
-              value={values.email}
-              onChange={handleChange}
-              placeholder="Ej. carlos@zapateria.com"
-            />
+            <input name="email" type="email" value={values.email} onChange={handleChange} placeholder="Ej. carlos@zapateria.com" />
           </FormField>
-
           <FormField label="Fecha de contratación" error={errors.fecha_contra}>
-            <input
-              name="fecha_contra"
-              type="date"
-              value={values.fecha_contra}
-              onChange={handleChange}
-            />
+            <input name="fecha_contra" type="date" value={values.fecha_contra} onChange={handleChange} />
           </FormField>
-
           <div className="form-actions">
             <Button variant="ghost" onClick={handleClose}>Cancelar</Button>
             <Button onClick={handleSubmit} disabled={submitting}>
@@ -186,6 +130,15 @@ export default function Empleados() {
           </div>
         </div>
       </Modal>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setDeleteTarget(null) }}
+        onConfirm={handleConfirmDelete}
+        title="¿Eliminar empleado?"
+        message={`El empleado "${deleteTarget?.nombre}" será eliminado permanentemente.`}
+        confirmLabel="Eliminar empleado"
+      />
     </div>
   )
 }
