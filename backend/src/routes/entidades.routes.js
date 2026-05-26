@@ -44,7 +44,7 @@ variantesRouter.patch('/:id/stock', requireAuth, requireRole(['admin', 'inventar
 
 // Proveedores
 const proveedoresRouter = express.Router()
-const { proveedores: prvCtrl } = require('../controllers/misc.controller')
+const prvCtrl = require('../controllers/proveedores.controller')
 
 proveedoresRouter.get('/', requireAuth, requireRole(['admin', 'inventario', 'reportes']), prvCtrl.getAll)
 proveedoresRouter.get('/:id', requireAuth, requireRole(['admin', 'inventario', 'reportes']), prvCtrl.getById)
