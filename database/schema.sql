@@ -270,6 +270,10 @@ REVOKE ALL ON detalle_venta FROM rol_cliente_web;
 DO $$
 BEGIN
   IF EXISTS (SELECT FROM pg_roles WHERE rolname = 'proy3') THEN
+    ALTER ROLE proy3 WITH LOGIN PASSWORD 'secret';
+    GRANT rol_admin TO proy3;
+  ELSE
+    CREATE ROLE proy3 WITH LOGIN PASSWORD 'secret';
     GRANT rol_admin TO proy3;
   END IF;
 END

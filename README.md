@@ -47,6 +47,7 @@ Base:       tienda
 
 | Username         | Contraseña      | Rol          |
 |------------------|-----------------|--------------|
+| proy3            | secret          | admin        |
 | admin_user       | admin123        | admin        |
 | vendedor_user    | vendedor123     | vendedor     |
 | inventario_user  | inventario123   | inventario   |

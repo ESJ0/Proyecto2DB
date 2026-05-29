@@ -255,6 +255,7 @@ INSERT INTO detalle_venta (id_venta, id_variante, cantidad, precio_unitario) VAL
 -- Usuarios de prueba — 1 por cada rol
 -- ------------------------------------------------------------
 INSERT INTO usuario (username, password_hash, rol) VALUES
+('proy3',           '$2a$10$wyvK2hTdCsB5/Z/LX4d0YOhRfqO7wHkEeVvmeddgex19t1xboJCVm', 'admin'),
 ('admin_user',      '$2a$10$H3Zusv1y2ACdOMtorWqXWekbeZjjtprgL8ACSX5lCykAHWEQ483ya', 'admin'),
 ('vendedor_user',   '$2a$10$39.14y7ioPN4a5zKZLTNnOkgw0/cokJGfjgujojtdlzTgn2.X/blu', 'vendedor'),
 ('inventario_user', '$2a$10$1DI0CX7eKwyyHXL5bNFhPeOyBFhMt/99nYy6FaaaP66smw6JjyBti', 'inventario'),
